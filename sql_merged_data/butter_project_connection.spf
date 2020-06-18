@@ -1,0 +1,1115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>ContentFilters</key>
+	<dict/>
+	<key>auto_connect</key>
+	<true/>
+	<key>data</key>
+	<dict>
+		<key>connection</key>
+		<dict>
+			<key>database</key>
+			<string>stay-at-home-covid.csv</string>
+			<key>host</key>
+			<string>127.0.0.1</string>
+			<key>kcid</key>
+			<string>-2092397114813956463</string>
+			<key>name</key>
+			<string>localhost</string>
+			<key>rdbms_type</key>
+			<string>mysql</string>
+			<key>sslCACertFileLocation</key>
+			<string></string>
+			<key>sslCACertFileLocationEnabled</key>
+			<integer>0</integer>
+			<key>sslCertificateFileLocation</key>
+			<string></string>
+			<key>sslCertificateFileLocationEnabled</key>
+			<integer>0</integer>
+			<key>sslKeyFileLocation</key>
+			<string></string>
+			<key>sslKeyFileLocationEnabled</key>
+			<integer>0</integer>
+			<key>type</key>
+			<string>SPTCPIPConnection</string>
+			<key>useSSL</key>
+			<integer>0</integer>
+			<key>user</key>
+			<string>root</string>
+		</dict>
+		<key>session</key>
+		<dict>
+			<key>connectionEncoding</key>
+			<string>utf8mb4</string>
+			<key>contentFilterV2</key>
+			<dict>
+				<key>children</key>
+				<array/>
+				<key>filterClass</key>
+				<string>groupNode</string>
+				<key>isConjunction</key>
+				<true/>
+			</dict>
+			<key>contentPageNumber</key>
+			<integer>1</integer>
+			<key>contentSelection</key>
+			<data>
+			YnBsaXN0MDDUAQIDBAUGBwpYJHZlcnNpb25ZJGFyY2hpdmVyVCR0
+			b3BYJG9iamVjdHMSAAGGoF8QD05TS2V5ZWRBcmNoaXZlctEICVRk
+			YXRhgAGoCwwXGBkaHiVVJG51bGzTDQ4PEBMWV05TLmtleXNaTlMu
+			b2JqZWN0c1YkY2xhc3OiERKAAoADohQVgASABYAHVHR5cGVUcm93
+			c18QHVNlbGVjdGlvbkRldGFpbFR5cGVOU0luZGV4U2V00hsPHB1c
+			TlNSYW5nZUNvdW50EACABtIfICEiWiRjbGFzc25hbWVYJGNsYXNz
+			ZXNaTlNJbmRleFNldKIjJFpOU0luZGV4U2V0WE5TT2JqZWN00h8g
+			JidcTlNEaWN0aW9uYXJ5oiYkAAgAEQAaACQAKQAyADcASQBMAFEA
+			UwBcAGIAaQBxAHwAgwCGAIgAigCNAI8AkQCTAJgAnQC9AMIAzwDR
+			ANMA2ADjAOwA9wD6AQUBDgETASAAAAAAAAACAQAAAAAAAAAoAAAA
+			AAAAAAAAAAAAAAABIw==
+			</data>
+			<key>contentSortColIsAsc</key>
+			<true/>
+			<key>contentViewport</key>
+			<string>{{0, 0}, {680, 466}}</string>
+			<key>isToolbarVisible</key>
+			<true/>
+			<key>queries</key>
+			<string>CREATE TABLE sh_dem_2020 (
+    `Country` VARCHAR(255),
+    `Date` DATETIME,
+    `Value` FLOAT,
+    `Status` INT,
+    `Description` VARCHAR(255)
+);
+
+INSERT INTO sh_dem_2020
+SELECT
+    `Country`,
+    shd.`Date`,
+    `Value`,
+    `Status`,
+    `Description`
+FROM sh_dem20 shd
+    LEFT JOIN dem20 d
+    ON shd.Date = d.Date
+ORDER BY shd.`Date`;
+    
+SELECT *
+FROM sh_dem_2020;
+
+CREATE TABLE sh_total_dem (
+    `Country` VARCHAR(255),
+    `Date` DATETIME,
+    `Value` FLOAT,
+    `Status` INT,
+    `Description` VARCHAR(255)
+);
+
+SELECT *
+FROM total_dem;
+
+INSERT INTO sh_total_dem
+SELECT
+    `Country`,
+    td.`Date`,
+    `Value`,
+    `Status`,
+    `Description`
+FROM total_dem td
+    LEFT JOIN sh
+    ON td.Date = sh.Date
+ORDER BY td.`Date`;
+
+SELECT *
+FROM sh_total_dem;
+
+CREATE TABLE co19_type1 (
+     Value_type_1 VARCHAR(255),
+     `Date` DATETIME,
+     Type_id INT,
+     `Description` VARCHAR(255)
+);
+
+INSERT INTO co19_type1
+SELECT
+     `Value` AS 'Value_type_1',
+     `Date`,
+     Type_id,
+     `Description`
+FROM co19
+WHERE Type_id = 1;
+
+SELECT *
+FROM co19_type1;
+
+CREATE TABLE co19_type2 (
+     Value_type_2 VARCHAR(255),
+     `Date` DATETIME,
+     Type_id INT,
+     `Description` VARCHAR(255)
+);
+
+INSERT INTO co19_type2
+SELECT
+     `Value` AS 'Value_type_2',
+     `Date`,
+     Type_id,
+     `Description`
+FROM co19
+WHERE Type_id = 2;
+
+SELECT *
+FROM co19_type2;
+
+CREATE TABLE co2019 (
+     `Date` DATETIME,
+     Value_type_1 VARCHAR(255),
+     Value_type_2 VARCHAR(255),
+     `Description` VARCHAR(255)
+);
+
+SELECT *
+FROM co2019;
+
+ALTER TABLE co2019 DROP COLUMN Description;
+
+INSERT INTO co2019
+SELECT
+    ct1c.`Date`,
+    `Value_type_1`,
+    `Value_type_2`
+FROM co19_type1_copy ct1c
+INNER JOIN co19_type2 ct2
+ON ct1c.Date = ct2.Date;
+
+SELECT *
+FROM co20;
+
+CREATE TABLE co20_type1 (
+     Value_type_1 VARCHAR(255),
+     `Date` DATETIME,
+     Type_id INT,
+     `Description` VARCHAR(255)
+);
+
+INSERT INTO co20_type1
+SELECT
+     `Value` AS 'Value_type_1',
+     `Date`,
+     Type_id,
+     `Description`
+FROM co20
+WHERE Type_id = 1;
+
+SELECT *
+FROM co20_type1;
+
+CREATE TABLE co20_type2 (
+     Value_type_2 VARCHAR(255),
+     `Date` DATETIME,
+     Type_id INT,
+     `Description` VARCHAR(255)
+);
+
+INSERT INTO co20_type2
+SELECT
+     `Value` AS 'Value_type_2',
+     `Date`,
+     Type_id,
+     `Description`
+FROM co20
+WHERE Type_id = 2;
+
+SELECT *
+FROM co20_type2;
+
+SELECT *
+FROM co2020;
+
+SELECT *
+FROM co2019;
+
+INSERT INTO co2020
+SELECT
+    c2t1.`Date`,
+    `Value_type_1`,
+    `Value_type_2`
+FROM co20_type1 c2t1
+INNER JOIN co20_type2 c2t2
+ON c2t1.Date = c2t2.Date;
+
+INSERT INTO total_co
+SELECT *
+FROM co2019;
+
+INSERT INTO total_co
+SELECT *
+FROM co2020;
+
+INSERT INTO total_co_and_dem
+SELECT
+    `Date`,
+    `Value_type_1` AS 'CO2_type_1',
+    `Value_type_2` AS 'CO2_type_2'
+FROM total_co;
+
+SELECT
+    `Value` AS 'Demand_value',
+    `Date`
+FROM total_dem;
+
+SELECT *
+FROM sh_dem_2020;
+
+INSERT INTO sh_dem_2020_no_dup
+SELECT DISTINCT *
+FROM sh_dem_2020;
+
+SELECT *
+FROM sh_dem_2020_no_dup;
+
+CREATE TABLE final_total_co_and_dem AS
+SELECT
+    tcad.`Date`,
+    `Value_type_1` AS 'CO2_type_1',
+    `Value_type_2` AS 'CO2_type_2',
+    `Value` AS 'Demand_value'
+FROM total_co_and_dem tcad
+LEFT JOIN total_dem td
+ON tcad.date = td.date;
+
+CREATE TABLE final_total_co_and_dem AS;
+
+SELECT *
+FROM sh_dem_2020;
+
+SELECT *
+FROM co2020;
+
+SELECT
+    tcad.`Date`,
+    `Value_type_1` AS 'CO2_type_1',
+    `Value_type_2` AS 'CO2_type_2',
+    `Value` AS 'Demand_value'
+FROM total_co_and_dem tcad
+LEFT JOIN total_dem td
+ON tcad.date = td.date;
+
+SELECT *
+FROM final_total_co_and_dem;
+
+CREATE TABLE total_info_20 AS
+SELECT
+    sd2nd.`Date`,
+    `Value_type_1` AS 'CO2_type_1',
+    `Value_type_2` AS 'CO2_type_2',
+    `Value` AS 'Demand_value',
+    sd2nd.status AS Status
+FROM sh_dem_2020_no_dup sd2nd
+LEFT JOIN co2020 c2
+ON sd2nd.date = c2.date;
+
+CREATE TABLE sh_co_20 AS
+SELECT
+    sh.`Date`,
+    `Value_type_1` AS 'CO2_type_1',
+    `Value_type_2` AS 'CO2_type_2',
+    sh.status AS Status
+FROM sh sh
+LEFT JOIN co2020 c2
+ON sh.date = c2.date;
+
+SELECT *
+FROM mix19;
+
+CREATE TABLE mix19_hydro AS
+SELECT
+    `Date`,
+    `Value` AS 'Hydro_value',
+    `Percentage` AS 'Hydro_percentage'
+FROM mix19
+WHERE Type = 'Hydro';
+
+CREATE TABLE mix19_pumped_storage AS
+SELECT
+    `Date`,
+    `Value` AS 'Pumped_storage_value',
+    `Percentage` AS 'Pumped_Storage_percentage'
+FROM mix19
+WHERE Type = 'Pumped Storage';
+
+CREATE TABLE mix19_nuclear AS
+SELECT
+    `Date`,
+    `Value` AS 'Nuclear_value',
+    `Percentage` AS 'Nuclear_percentage'
+FROM mix19
+WHERE Type = 'Nuclear';
+
+CREATE TABLE mix19_coal AS
+SELECT
+    `Date`,
+    `Value` AS 'Coal_value',
+    `Percentage` AS 'Coal_percentage'
+FROM mix19
+WHERE Type = 'Coal';
+
+CREATE TABLE mix19_gas AS
+SELECT
+    `Date`,
+    `Value` AS 'Gas_value',
+    `Percentage` AS 'Gas_percentage'
+FROM mix19
+WHERE Type = 'Fuel + Gas';
+
+CREATE TABLE mix19_combined_cycle AS
+SELECT
+    `Date`,
+    `Value` AS 'Combined_Cycle_value',
+    `Percentage` AS 'Combined_Cycle_percentage'
+FROM mix19
+WHERE Type = 'Combined cycle';
+
+CREATE TABLE mix19_hydroeolian AS
+SELECT
+    `Date`,
+    `Value` AS 'Hydroeolian_value',
+    `Percentage` AS 'Hydroeolian_percentage'
+FROM mix19
+WHERE Type = 'Hydroeolian';
+
+CREATE TABLE mix19_wind AS
+SELECT
+    `Date`,
+    `Value` AS 'Wind_value',
+    `Percentage` AS 'Wind_percentage'
+FROM mix19
+WHERE Type = 'Wind';
+
+CREATE TABLE mix19_photo_solar AS
+SELECT
+    `Date`,
+    `Value` AS 'Solar_photovoltaic_value',
+    `Percentage` AS 'Solar_photovoltaic_percentage'
+FROM mix19
+WHERE Type = 'Solar photovoltaic';
+
+CREATE TABLE mix19_thermal_solar AS
+SELECT
+    `Date`,
+    `Value` AS 'Thermal_Solar_value',
+    `Percentage` AS 'Thermal_Solar_percentage'
+FROM mix19
+WHERE Type = 'Thermal solar';
+
+CREATE TABLE mix19_other_renewables AS
+SELECT
+    `Date`,
+    `Value` AS 'Other_Renewables_value',
+    `Percentage` AS 'Other_Renewables_percentage'
+FROM mix19
+WHERE Type = 'Other renewables';
+
+CREATE TABLE mix19_cogeneration AS
+SELECT
+    `Date`,
+    `Value` AS 'Cogeneration_value',
+    `Percentage` AS 'Cogeneration_percentage'
+FROM mix19
+WHERE Type = 'Cogeneration';
+
+CREATE TABLE mix19_non_renewable_waste AS
+SELECT
+    `Date`,
+    `Value` AS 'Non_Renewable_Waste_value',
+    `Percentage` AS 'Non_Renewable_Waste_percentage'
+FROM mix19
+WHERE Type = 'Non-renewable waste';
+
+CREATE TABLE mix19_renewable_waste AS
+SELECT
+    `Date`,
+    `Value` AS 'Renewable_Waste_value',
+    `Percentage` AS 'Renewable_Waste_percentage'
+FROM mix19
+WHERE Type = 'Renewable waste';
+
+ALTER TABLE mix2019 DROP COLUMN `Type`;
+ALTER TABLE mix2019 DROP COLUMN `Value`;
+ALTER TABLE mix2019 DROP COLUMN `Percentage`;
+
+SELECT *
+FROM mix2019;
+
+INSERT INTO mix2019
+SELECT `Date`
+FROM mix19_coal;
+
+CREATE TABLE mix_2019_final
+SELECT
+    mix2019.`Date`,
+    mix19_coal.`Coal_value`,
+    mix19_coal.`Coal_percentage`,
+    mix19_cogeneration.`Cogeneration_value`,
+    mix19_cogeneration.`Cogeneration_percentage`,
+    mix19_combined_cycle.`Combined_Cycle_value`,
+    mix19_combined_cycle.`Combined_Cycle_percentage`,
+    mix19_gas.`Gas_value`,
+    mix19_gas.`Gas_percentage`,
+    mix19_hydro.`Hydro_value`,
+    mix19_hydro.`Hydro_percentage`,
+    mix19_hydroeolian.`Hydroeolian_value`,
+    mix19_hydroeolian.`Hydroeolian_percentage`,
+    mix19_non_renewable_waste.`Non_Renewable_Waste_value`,
+    mix19_non_renewable_waste.`Non_Renewable_Waste_percentage`,
+    mix19_nuclear.`Nuclear_value`,
+    mix19_nuclear.`Nuclear_percentage`,
+    mix19_other_renewables.`Other_Renewables_value`,
+    mix19_other_renewables.`Other_Renewables_percentage`,
+    mix19_photo_solar.`Solar_photovoltaic_value`,
+    mix19_photo_solar.`Solar_photovoltaic_percentage`,
+    mix19_pumped_storage.`Pumped_storage_value`,
+    mix19_pumped_storage.`Pumped_storage_percentage`,
+    mix19_renewable_waste.`Renewable_Waste_value`,
+    mix19_renewable_waste.`Renewable_Waste_percentage`,
+    mix19_thermal_solar.`Thermal_Solar_value`,
+    mix19_thermal_solar.`Thermal_Solar_percentage`,
+    mix19_wind.`Wind_value`,
+    mix19_wind.`Wind_percentage`
+FROM
+    mix2019
+INNER JOIN
+    mix19_coal ON mix19_coal.Date = mix2019.Date
+INNER JOIN
+    mix19_cogeneration ON mix19_cogeneration.Date = mix2019.Date
+INNER JOIN
+    mix19_combined_cycle ON mix19_combined_cycle.Date = mix2019.Date
+INNER JOIN
+    mix19_gas ON mix19_gas.Date = mix2019.Date
+INNER JOIN
+    mix19_hydro ON mix19_hydro.Date = mix2019.Date
+INNER JOIN
+    mix19_hydroeolian ON mix19_hydroeolian.Date = mix2019.Date
+INNER JOIN
+    mix19_non_renewable_waste ON mix19_non_renewable_waste.Date = mix2019.Date
+INNER JOIN
+    mix19_nuclear ON mix19_nuclear.Date = mix2019.Date
+INNER JOIN
+    mix19_other_renewables ON mix19_other_renewables.Date = mix2019.Date
+INNER JOIN
+    mix19_photo_solar ON mix19_photo_solar.Date = mix2019.Date
+INNER JOIN
+    mix19_pumped_storage ON mix19_pumped_storage.Date = mix2019.Date
+INNER JOIN
+    mix19_renewable_waste ON mix19_renewable_waste.Date = mix2019.Date
+INNER JOIN
+    mix19_thermal_solar ON mix19_thermal_solar.Date = mix2019.Date
+INNER JOIN
+    mix19_wind ON mix19_wind.Date = mix2019.Date;
+
+SELECT *
+FROM mix20;
+
+CREATE TABLE mix20_hydro AS
+SELECT
+    `Date`,
+    `Value` AS 'Hydro_value',
+    `Percentage` AS 'Hydro_percentage'
+FROM mix20
+WHERE Type = 'Hydro';
+
+CREATE TABLE mix20_pumped_storage AS
+SELECT
+    `Date`,
+    `Value` AS 'Pumped_storage_value',
+    `Percentage` AS 'Pumped_Storage_percentage'
+FROM mix20
+WHERE Type = 'Pumped Storage';
+
+CREATE TABLE mix20_nuclear AS
+SELECT
+    `Date`,
+    `Value` AS 'Nuclear_value',
+    `Percentage` AS 'Nuclear_percentage'
+FROM mix20
+WHERE Type = 'Nuclear';
+
+CREATE TABLE mix20_coal AS
+SELECT
+    `Date`,
+    `Value` AS 'Coal_value',
+    `Percentage` AS 'Coal_percentage'
+FROM mix20
+WHERE Type = 'Coal';
+
+CREATE TABLE mix20_gas AS
+SELECT
+    `Date`,
+    `Value` AS 'Gas_value',
+    `Percentage` AS 'Gas_percentage'
+FROM mix20
+WHERE Type = 'Fuel + Gas';
+
+CREATE TABLE mix20_combined_cycle AS
+SELECT
+    `Date`,
+    `Value` AS 'Combined_Cycle_value',
+    `Percentage` AS 'Combined_Cycle_percentage'
+FROM mix20
+WHERE Type = 'Combined cycle';
+
+CREATE TABLE mix20_hydroeolian AS
+SELECT
+    `Date`,
+    `Value` AS 'Hydroeolian_value',
+    `Percentage` AS 'Hydroeolian_percentage'
+FROM mix20
+WHERE Type = 'Hydroeolian';
+
+CREATE TABLE mix20_wind AS
+SELECT
+    `Date`,
+    `Value` AS 'Wind_value',
+    `Percentage` AS 'Wind_percentage'
+FROM mix20
+WHERE Type = 'Wind';
+
+CREATE TABLE mix20_photo_solar AS
+SELECT
+    `Date`,
+    `Value` AS 'Solar_photovoltaic_value',
+    `Percentage` AS 'Solar_photovoltaic_percentage'
+FROM mix20
+WHERE Type = 'Solar photovoltaic';
+
+CREATE TABLE mix20_thermal_solar AS
+SELECT
+    `Date`,
+    `Value` AS 'Thermal_Solar_value',
+    `Percentage` AS 'Thermal_Solar_percentage'
+FROM mix20
+WHERE Type = 'Thermal solar';
+
+CREATE TABLE mix20_other_renewables AS
+SELECT
+    `Date`,
+    `Value` AS 'Other_Renewables_value',
+    `Percentage` AS 'Other_Renewables_percentage'
+FROM mix20
+WHERE Type = 'Other renewables';
+
+CREATE TABLE mix20_cogeneration AS
+SELECT
+    `Date`,
+    `Value` AS 'Cogeneration_value',
+    `Percentage` AS 'Cogeneration_percentage'
+FROM mix20
+WHERE Type = 'Cogeneration';
+
+CREATE TABLE mix20_non_renewable_waste AS
+SELECT
+    `Date`,
+    `Value` AS 'Non_Renewable_Waste_value',
+    `Percentage` AS 'Non_Renewable_Waste_percentage'
+FROM mix20
+WHERE Type = 'Non-renewable waste';
+
+CREATE TABLE mix20_renewable_waste AS
+SELECT
+    `Date`,
+    `Value` AS 'Renewable_Waste_value',
+    `Percentage` AS 'Renewable_Waste_percentage'
+FROM mix20
+WHERE Type = 'Renewable waste';
+
+ALTER TABLE mix2020 DROP COLUMN `Type`;
+ALTER TABLE mix2020 DROP COLUMN `Value`;
+ALTER TABLE mix2020 DROP COLUMN `Percentage`;
+
+SELECT *
+FROM mix_2020_final;
+
+INSERT INTO mix2020
+SELECT `Date`
+FROM mix20_coal;
+
+CREATE TABLE mix_2020_final
+SELECT
+    mix2020.`Date`,
+    mix20_coal.`Coal_value`,
+    mix20_coal.`Coal_percentage`,
+    mix20_cogeneration.`Cogeneration_value`,
+    mix20_cogeneration.`Cogeneration_percentage`,
+    mix20_combined_cycle.`Combined_Cycle_value`,
+    mix20_combined_cycle.`Combined_Cycle_percentage`,
+    mix20_gas.`Gas_value`,
+    mix20_gas.`Gas_percentage`,
+    mix20_hydro.`Hydro_value`,
+    mix20_hydro.`Hydro_percentage`,
+    mix20_hydroeolian.`Hydroeolian_value`,
+    mix20_hydroeolian.`Hydroeolian_percentage`,
+    mix20_non_renewable_waste.`Non_Renewable_Waste_value`,
+    mix20_non_renewable_waste.`Non_Renewable_Waste_percentage`,
+    mix20_nuclear.`Nuclear_value`,
+    mix20_nuclear.`Nuclear_percentage`,
+    mix20_other_renewables.`Other_Renewables_value`,
+    mix20_other_renewables.`Other_Renewables_percentage`,
+    mix20_photo_solar.`Solar_photovoltaic_value`,
+    mix20_photo_solar.`Solar_photovoltaic_percentage`,
+    mix20_pumped_storage.`Pumped_storage_value`,
+    mix20_pumped_storage.`Pumped_storage_percentage`,
+    mix20_renewable_waste.`Renewable_Waste_value`,
+    mix20_renewable_waste.`Renewable_Waste_percentage`,
+    mix20_thermal_solar.`Thermal_Solar_value`,
+    mix20_thermal_solar.`Thermal_Solar_percentage`,
+    mix20_wind.`Wind_value`,
+    mix20_wind.`Wind_percentage`
+FROM
+    mix2020
+INNER JOIN
+    mix20_coal ON mix20_coal.Date = mix2020.Date
+INNER JOIN
+    mix20_cogeneration ON mix20_cogeneration.Date = mix2020.Date
+INNER JOIN
+    mix20_combined_cycle ON mix20_combined_cycle.Date = mix2020.Date
+INNER JOIN
+    mix20_gas ON mix20_gas.Date = mix2020.Date
+INNER JOIN
+    mix20_hydro ON mix20_hydro.Date = mix2020.Date
+INNER JOIN
+    mix20_hydroeolian ON mix20_hydroeolian.Date = mix2020.Date
+INNER JOIN
+    mix20_non_renewable_waste ON mix20_non_renewable_waste.Date = mix2020.Date
+INNER JOIN
+    mix20_nuclear ON mix20_nuclear.Date = mix2020.Date
+INNER JOIN
+    mix20_other_renewables ON mix20_other_renewables.Date = mix2020.Date
+INNER JOIN
+    mix20_photo_solar ON mix20_photo_solar.Date = mix2020.Date
+INNER JOIN
+    mix20_pumped_storage ON mix20_pumped_storage.Date = mix2020.Date
+INNER JOIN
+    mix20_renewable_waste ON mix20_renewable_waste.Date = mix2020.Date
+INNER JOIN
+    mix20_thermal_solar ON mix20_thermal_solar.Date = mix2020.Date
+INNER JOIN
+    mix20_wind ON mix20_wind.Date = mix2020.Date;
+
+SELECT *
+FROM mix_2019_final;
+</string>
+			<key>table</key>
+			<string>co19_type1_copy</string>
+			<key>view</key>
+			<string>SP_VIEW_CUSTOMQUERY</string>
+			<key>windowVerticalDividerPosition</key>
+			<real>431</real>
+		</dict>
+	</dict>
+	<key>encrypted</key>
+	<false/>
+	<key>format</key>
+	<string>connection</string>
+	<key>queryFavorites</key>
+	<array/>
+	<key>queryHistory</key>
+	<array>
+		<string>SELECT *
+FROM mix_2019_final</string>
+		<string>SELECT *
+FROM co2020</string>
+		<string>SELECT *
+FROM mix_2020_final</string>
+		<string>CREATE TABLE mix_2020_final
+SELECT
+    mix2020.`Date`,
+    mix20_coal.`Coal_value`,
+    mix20_coal.`Coal_percentage`,
+    mix20_cogeneration.`Cogeneration_value`,
+    mix20_cogeneration.`Cogeneration_percentage`,
+    mix20_combined_cycle.`Combined_Cycle_value`,
+    mix20_combined_cycle.`Combined_Cycle_percentage`,
+    mix20_gas.`Gas_value`,
+    mix20_gas.`Gas_percentage`,
+    mix20_hydro.`Hydro_value`,
+    mix20_hydro.`Hydro_percentage`,
+    mix20_hydroeolian.`Hydroeolian_value`,
+    mix20_hydroeolian.`Hydroeolian_percentage`,
+    mix20_non_renewable_waste.`Non_Renewable_Waste_value`,
+    mix20_non_renewable_waste.`Non_Renewable_Waste_percentage`,
+    mix20_nuclear.`Nuclear_value`,
+    mix20_nuclear.`Nuclear_percentage`,
+    mix20_other_renewables.`Other_Renewables_value`,
+    mix20_other_renewables.`Other_Renewables_percentage`,
+    mix20_photo_solar.`Solar_photovoltaic_value`,
+    mix20_photo_solar.`Solar_photovoltaic_percentage`,
+    mix20_pumped_storage.`Pumped_storage_value`,
+    mix20_pumped_storage.`Pumped_storage_percentage`,
+    mix20_renewable_waste.`Renewable_Waste_value`,
+    mix20_renewable_waste.`Renewable_Waste_percentage`,
+    mix20_thermal_solar.`Thermal_Solar_value`,
+    mix20_thermal_solar.`Thermal_Solar_percentage`,
+    mix20_wind.`Wind_value`,
+    mix20_wind.`Wind_percentage`
+FROM
+    mix2020
+INNER JOIN
+    mix20_coal ON mix20_coal.Date = mix2020.Date
+INNER JOIN
+    mix20_cogeneration ON mix20_cogeneration.Date = mix2020.Date
+INNER JOIN
+    mix20_combined_cycle ON mix20_combined_cycle.Date = mix2020.Date
+INNER JOIN
+    mix20_gas ON mix20_gas.Date = mix2020.Date
+INNER JOIN
+    mix20_hydro ON mix20_hydro.Date = mix2020.Date
+INNER JOIN
+    mix20_hydroeolian ON mix20_hydroeolian.Date = mix2020.Date
+INNER JOIN
+    mix20_non_renewable_waste ON mix20_non_renewable_waste.Date = mix2020.Date
+INNER JOIN
+    mix20_nuclear ON mix20_nuclear.Date = mix2020.Date
+INNER JOIN
+    mix20_other_renewables ON mix20_other_renewables.Date = mix2020.Date
+INNER JOIN
+    mix20_photo_solar ON mix20_photo_solar.Date = mix2020.Date
+INNER JOIN
+    mix20_pumped_storage ON mix20_pumped_storage.Date = mix2020.Date
+INNER JOIN
+    mix20_renewable_waste ON mix20_renewable_waste.Date = mix2020.Date
+INNER JOIN
+    mix20_thermal_solar ON mix20_thermal_solar.Date = mix2020.Date
+INNER JOIN
+    mix20_wind ON mix20_wind.Date = mix2020.Date</string>
+		<string>CREATE TABLE mix_2020_final
+SELECT
+    mix2020.`Date`,
+    mix20_coal.`Coal_value`,
+    mix20_coal.`Coal_percentage`,
+    mix20_cogeneration.`Cogeneration_value`,
+    mix20_cogeneration.`Cogeneration_percentage`,
+    mix20_combined_cycle.`Combined_Cycle_value`,
+    mix20_combined_cycle.`Combined_Cycle_percentage`,
+    mix20_gas.`Gas_value`,
+    mix20_gas.`Gas_percentage`,
+    mix20_hydro.`Hydro_value`,
+    mix20_hydro.`Hydro_percentage`,
+    mix20_hydroeolian.`Hydroeolian_value`,
+    mix20_hydroeolian.`Hydroeolian_percentage`,
+    mix20_non_renewable_waste.`Non_Renewable_Waste_value`,
+    mix20_non_renewable_waste.`Non_Renewable_Waste_percentage`,
+    mix20_nuclear.`Nuclear_value`,
+    mix20_nuclear.`Nuclear_percentage`,
+    mix20_other_renewables.`Other_Renewables_value`,
+    mix20_other_renewables.`Other_Renewables_percentage`,
+    mix20_photo_solar.`Solar_photovoltaic_value`,
+    mix20_photo_solar.`Solar_photovoltaic_percentage`,
+    mix20_pumped_storage.`Pumped_storage_value`,
+    mix20_pumped_storage.`Pumped_storage_percentage`,
+    mix20_renewable_waste.`Renewable_Waste_value`,
+    mix20_renewable_waste.`Renewable_Waste_percentage`,
+    mix20_thermal_solar.`Thermal_Solar_value`,
+    mix20_thermal_solar.`Thermal_Solar_percentage`,
+    mix20_wind.`Wind_value`,
+    mix20_wind.`Wind_percentage`
+FROM
+    mix2020
+INNER JOIN
+    mix20_coal ON mix20_coal.Date = mix2020.Date
+INNER JOIN
+    mix20_cogeneration ON mix20_cogeneration.Date = mix2020.Date
+INNER JOIN
+    mix20_combined_cycle ON mix20_combined_cycle.Date = mix2020.Date
+INNER JOIN
+    mix20_gas ON mix20_gas.Date = mix2020.Date
+INNER JOIN
+    mix20_hydro ON mix20_hydro.Date = mix2020.Date
+INNER JOIN
+    mix20_hydroeolian ON mix20_hydroeolian.Date = mix2020.Date
+INNER JOIN
+    mix20_non_renewable_waste ON mix20_non_renewable_waste.Date = mix2020.Date
+INNER JOIN
+    mix20_nuclear ON mix20_nuclear.Date = mix2020.Date
+INNER JOIN
+    mix20_other_renewables ON mix20_other_renewables.Date = mix2020.Date
+INNER JOIN
+    mix20_photo_solar ON mix20_photo_solar.Date = mix2020.Date
+INNER JOIN
+    mix20_pumped_storage ON mix20_pumped_storage.Date = mix2020.Dater
+INNER JOIN
+    mix20_renewable_waste ON mix20_renewable_waste.Date = mix2020.Date
+INNER JOIN
+    mix20_thermal_solar ON mix20_thermal_solar.Date = mix2020.Date
+INNER JOIN
+    mix20_wind ON mix20_wind.Date = mix2020.Date</string>
+		<string>CREATE TABLE mix_2019_final
+SELECT
+    mix2019.`Date`,
+    mix19_coal.`Coal_value`,
+    mix19_coal.`Coal_percentage`,
+    mix19_cogeneration.`Cogeneration_value`,
+    mix19_cogeneration.`Cogeneration_percentage`,
+    mix19_combined_cycle.`Combined_Cycle_value`,
+    mix19_combined_cycle.`Combined_Cycle_percentage`,
+    mix19_gas.`Gas_value`,
+    mix19_gas.`Gas_percentage`,
+    mix19_hydro.`Hydro_value`,
+    mix19_hydro.`Hydro_percentage`,
+    mix19_hydroeolian.`Hydroeolian_value`,
+    mix19_hydroeolian.`Hydroeolian_percentage`,
+    mix19_non_renewable_waste.`Non_Renewable_Waste_value`,
+    mix19_non_renewable_waste.`Non_Renewable_Waste_percentage`,
+    mix19_nuclear.`Nuclear_value`,
+    mix19_nuclear.`Nuclear_percentage`,
+    mix19_other_renewables.`Other_Renewables_value`,
+    mix19_other_renewables.`Other_Renewables_percentage`,
+    mix19_photo_solar.`Solar_photovoltaic_value`,
+    mix19_photo_solar.`Solar_photovoltaic_percentage`,
+    mix19_pumped_storage.`Pumped_storage_value`,
+    mix19_pumped_storage.`Pumped_storage_percentage`,
+    mix19_renewable_waste.`Renewable_Waste_value`,
+    mix19_renewable_waste.`Renewable_Waste_percentage`,
+    mix19_thermal_solar.`Thermal_Solar_value`,
+    mix19_thermal_solar.`Thermal_Solar_percentage`,
+    mix19_wind.`Wind_value`,
+    mix19_wind.`Wind_percentage`
+FROM
+    mix2019
+INNER JOIN
+    mix19_coal ON mix19_coal.Date = mix2019.Date
+INNER JOIN
+    mix19_cogeneration ON mix19_cogeneration.Date = mix2019.Date
+INNER JOIN
+    mix19_combined_cycle ON mix19_combined_cycle.Date = mix2019.Date
+INNER JOIN
+    mix19_gas ON mix19_gas.Date = mix2019.Date
+INNER JOIN
+    mix19_hydro ON mix19_hydro.Date = mix2019.Date
+INNER JOIN
+    mix19_hydroeolian ON mix19_hydroeolian.Date = mix2019.Date
+INNER JOIN
+    mix19_non_renewable_waste ON mix19_non_renewable_waste.Date = mix2019.Date
+INNER JOIN
+    mix19_nuclear ON mix19_nuclear.Date = mix2019.Date
+INNER JOIN
+    mix19_other_renewables ON mix19_other_renewables.Date = mix2019.Date
+INNER JOIN
+    mix19_photo_solar ON mix19_photo_solar.Date = mix2019.Date
+INNER JOIN
+    mix19_pumped_storage ON mix19_pumped_storage.Date = mix2019.Date
+INNER JOIN
+    mix19_renewable_waste ON mix19_renewable_waste.Date = mix2019.Date
+INNER JOIN
+    mix19_thermal_solar ON mix19_thermal_solar.Date = mix2019.Date
+INNER JOIN
+    mix19_wind ON mix19_wind.Date = mix2019.Date</string>
+		<string>SELECT
+    mix2019.`Date`,
+    mix19_coal.`Coal_value`,
+    mix19_coal.`Coal_percentage`,
+    mix19_cogeneration.`Cogeneration_value`,
+    mix19_cogeneration.`Cogeneration_percentage`,
+    mix19_combined_cycle.`Combined_Cycle_value`,
+    mix19_combined_cycle.`Combined_Cycle_percentage`,
+    mix19_gas.`Gas_value`,
+    mix19_gas.`Gas_percentage`,
+    mix19_hydro.`Hydro_value`,
+    mix19_hydro.`Hydro_percentage`,
+    mix19_hydroeolian.`Hydroeolian_value`,
+    mix19_hydroeolian.`Hydroeolian_percentage`,
+    mix19_non_renewable_waste.`Non_Renewable_Waste_value`,
+    mix19_non_renewable_waste.`Non_Renewable_Waste_percentage`,
+    mix19_nuclear.`Nuclear_value`,
+    mix19_nuclear.`Nuclear_percentage`,
+    mix19_other_renewables.`Other_Renewables_value`,
+    mix19_other_renewables.`Other_Renewables_percentage`,
+    mix19_photo_solar.`Solar_photovoltaic_value`,
+    mix19_photo_solar.`Solar_photovoltaic_percentage`,
+    mix19_pumped_storage.`Pumped_storage_value`,
+    mix19_pumped_storage.`Pumped_storage_percentage`,
+    mix19_renewable_waste.`Renewable_Waste_value`,
+    mix19_renewable_waste.`Renewable_Waste_percentage`,
+    mix19_thermal_solar.`Thermal_Solar_value`,
+    mix19_thermal_solar.`Thermal_Solar_percentage`,
+    mix19_wind.`Wind_value`,
+    mix19_wind.`Wind_percentage`
+FROM
+    mix2019
+INNER JOIN
+    mix19_coal ON mix19_coal.Date = mix2019.Date
+INNER JOIN
+    mix19_cogeneration ON mix19_cogeneration.Date = mix2019.Date
+INNER JOIN
+    mix19_combined_cycle ON mix19_combined_cycle.Date = mix2019.Date
+INNER JOIN
+    mix19_gas ON mix19_gas.Date = mix2019.Date
+INNER JOIN
+    mix19_hydro ON mix19_hydro.Date = mix2019.Date
+INNER JOIN
+    mix19_hydroeolian ON mix19_hydroeolian.Date = mix2019.Date
+INNER JOIN
+    mix19_non_renewable_waste ON mix19_non_renewable_waste.Date = mix2019.Date
+INNER JOIN
+    mix19_nuclear ON mix19_nuclear.Date = mix2019.Date
+INNER JOIN
+    mix19_other_renewables ON mix19_other_renewables.Date = mix2019.Date
+INNER JOIN
+    mix19_photo_solar ON mix19_photo_solar.Date = mix2019.Date
+INNER JOIN
+    mix19_pumped_storage ON mix19_pumped_storage.Date = mix2019.Date
+INNER JOIN
+    mix19_renewable_waste ON mix19_renewable_waste.Date = mix2019.Date
+INNER JOIN
+    mix19_thermal_solar ON mix19_thermal_solar.Date = mix2019.Date
+INNER JOIN
+    mix19_wind ON mix19_wind.Date = mix2019.Date</string>
+		<string>INSERT INTO mix2019
+SELECT
+    mix2019.`Date`,
+    mix19_coal.`Coal_value`,
+    mix19_coal.`Coal_percentage`,
+    mix19_cogeneration.`Cogeneration_value`,
+    mix19_cogeneration.`Cogeneration_percentage`,
+    mix19_combined_cycle.`Combined_Cycle_value`,
+    mix19_combined_cycle.`Combined_Cycle_percentage`,
+    mix19_gas.`Gas_value`,
+    mix19_gas.`Gas_percentage`,
+    mix19_hydro.`Hydro_value`,
+    mix19_hydro.`Hydro_percentage`,
+    mix19_hydroeolian.`Hydroeolian_value`,
+    mix19_hydroeolian.`Hydroeolian_percentage`,
+    mix19_non_renewable_waste.`Non_Renewable_Waste_value`,
+    mix19_non_renewable_waste.`Non_Renewable_Waste_percentage`,
+    mix19_nuclear.`Nuclear_value`,
+    mix19_nuclear.`Nuclear_percentage`,
+    mix19_other_renewables.`Other_Renewables_value`,
+    mix19_other_renewables.`Other_Renewables_percentage`,
+    mix19_photo_solar.`Solar_photovoltaic_value`,
+    mix19_photo_solar.`Solar_photovoltaic_percentage`,
+    mix19_pumped_storage.`Pumped_storage_value`,
+    mix19_pumped_storage.`Pumped_storage_percentage`,
+    mix19_renewable_waste.`Renewable_Waste_value`,
+    mix19_renewable_waste.`Renewable_Waste_percentage`,
+    mix19_thermal_solar.`Thermal_Solar_value`,
+    mix19_thermal_solar.`Thermal_Solar_percentage`,
+    mix19_wind.`Wind_value`,
+    mix19_wind.`Wind_percentage`
+FROM
+    mix2019
+INNER JOIN
+    mix19_coal ON mix19_coal.Date = mix2019.Date
+INNER JOIN
+    mix19_cogeneration ON mix19_cogeneration.Date = mix2019.Date
+INNER JOIN
+    mix19_combined_cycle ON mix19_combined_cycle.Date = mix2019.Date
+INNER JOIN
+    mix19_gas ON mix19_gas.Date = mix2019.Date
+INNER JOIN
+    mix19_hydro ON mix19_hydro.Date = mix2019.Date
+INNER JOIN
+    mix19_hydroeolian ON mix19_hydroeolian.Date = mix2019.Date
+INNER JOIN
+    mix19_non_renewable_waste ON mix19_non_renewable_waste.Date = mix2019.Date
+INNER JOIN
+    mix19_nuclear ON mix19_nuclear.Date = mix2019.Date
+INNER JOIN
+    mix19_other_renewables ON mix19_other_renewables.Date = mix2019.Date
+INNER JOIN
+    mix19_photo_solar ON mix19_photo_solar.Date = mix2019.Date
+INNER JOIN
+    mix19_pumped_storage ON mix19_pumped_storage.Date = mix2019.Date
+INNER JOIN
+    mix19_renewable_waste ON mix19_renewable_waste.Date = mix2019.Date
+INNER JOIN
+    mix19_thermal_solar ON mix19_thermal_solar.Date = mix2019.Date
+INNER JOIN
+    mix19_wind ON mix19_wind.Date = mix2019.Date</string>
+		<string>INSERT INTO mix2019
+SELECT `Date`
+FROM mix19_coal</string>
+		<string>SELECT *
+FROM mix2019</string>
+		<string>DELETE FROM mix2019</string>
+		<string>SELECT *
+FROM mix2020</string>
+		<string>SELECT
+    mix2020.`Date`,
+    mix20_coal.`Coal_value`,
+    mix20_coal.`Coal_percentage`,
+    mix20_cogeneration.`Cogeneration_value`,
+    mix20_cogeneration.`Cogeneration_percentage`,
+    mix20_combined_cycle.`Combined_Cycle_value`,
+    mix20_combined_cycle.`Combined_Cycle_percentage`,
+    mix20_gas.`Gas_value`,
+    mix20_gas.`Gas_percentage`,
+    mix20_hydro.`Hydro_value`,
+    mix20_hydro.`Hydro_percentage`,
+    mix20_hydroeolian.`Hydroeolian_value`,
+    mix20_hydroeolian.`Hydroeolian_percentage`,
+    mix20_non_renewable_waste.`Non_Renewable_Waste_value`,
+    mix20_non_renewable_waste.`Non_Renewable_Waste_percentage`,
+    mix20_nuclear.`Nuclear_value`,
+    mix20_nuclear.`Nuclear_percentage`,
+    mix20_other_renewables.`Other_Renewables_value`,
+    mix20_other_renewables.`Other_Renewables_percentage`,
+    mix20_photo_solar.`Solar_photovoltaic_value`,
+    mix20_photo_solar.`Solar_photovoltaic_percentage`,
+    mix20_pumped_storage.`Pumped_storage_value`,
+    mix20_pumped_storage.`Pumped_storage_percentage`,
+    mix20_renewable_waste.`Renewable_Waste_value`,
+    mix20_renewable_waste.`Renewable_Waste_percentage`,
+    mix20_thermal_solar.`Thermal_Solar_value`,
+    mix20_thermal_solar.`Thermal_Solar_percentage`,
+    mix20_wind.`Wind_value`,
+    mix20_wind.`Wind_percentage`
+FROM
+    mix2020
+INNER JOIN
+    mix20_coal ON mix20_coal.Date = mix2020.Date
+INNER JOIN
+    mix20_cogeneration ON mix20_cogeneration.Date = mix2020.Date
+INNER JOIN
+    mix20_combined_cycle ON mix20_combined_cycle.Date = mix2020.Date
+INNER JOIN
+    mix20_gas ON mix20_gas.Date = mix2020.Date
+INNER JOIN
+    mix20_hydro ON mix20_hydro.Date = mix2020.Date
+INNER JOIN
+    mix20_hydroeolian ON mix20_hydroeolian.Date = mix2020.Date
+INNER JOIN
+    mix20_non_renewable_waste ON mix20_non_renewable_waste.Date = mix2020.Date
+INNER JOIN
+    mix20_nuclear ON mix20_nuclear.Date = mix2020.Date
+INNER JOIN
+    mix20_other_renewables ON mix20_other_renewables.Date = mix2020.Date
+INNER JOIN
+    mix20_photo_solar ON mix20_photo_solar.Date = mix2020.Date
+INNER JOIN
+    mix20_pumped_storage ON mix20_pumped_storage.Date = mix2020.Date
+INNER JOIN
+    mix20_renewable_waste ON mix20_renewable_waste.Date = mix2020.Date
+INNER JOIN
+    mix20_thermal_solar ON mix20_thermal_solar.Date = mix2020.Date
+INNER JOIN
+    mix20_wind ON mix20_wind.Date = mix2020.Date</string>
+		<string>SELECT *
+FROM mix20_wind</string>
+		<string>SELECT *
+FROM mix19_wind</string>
+		<string>INSERT INTO mix2020
+SELECT `Date`
+FROM mix20_coal</string>
+		<string>FROM mix202</string>
+		<string>ALTER TABLE mix2020 DROP COLUMN `Percentage`</string>
+		<string>ALTER TABLE mix2020 DROP COLUMN `Value`</string>
+		<string>2</string>
+	</array>
+	<key>rdbms_type</key>
+	<string>mysql</string>
+	<key>rdbms_version</key>
+	<string>8.0.19</string>
+	<key>version</key>
+	<integer>1</integer>
+</dict>
+</plist>
